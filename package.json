@@ -1,0 +1,20 @@
+{
+  "name": "llm-document-workflows",
+  "version": "0.1.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "description": "Portfólio técnico de fluxos seguros de documentos, LLMs simulados, contratos transacionais e processamento assíncrono.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test --test-reporter=spec",
+    "demo": "node demo/run-demo.js",
+    "check": "npm run test && npm run demo"
+  },
+  "dependencies": {
+    "fflate": "0.8.3",
+    "unpdf": "1.8.0"
+  }
+}

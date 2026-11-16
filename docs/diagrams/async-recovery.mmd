@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant O as Orquestrador local
+    participant W as Janela de backpressure
+    participant Q as Fila concorrente
+    participant T as Tarefa fictícia
+
+    O->>W: preparar até 2 itens
+    W->>Q: processar com limite 2
+    Q->>T: tentativa inicial
+    T-->>Q: falha transitória 503
+    Q->>Q: classificar + calcular 600 ms
+    Q->>T: retry 1
+    T-->>Q: resultado válido
+    Q-->>W: liberar itens em finally
+    W-->>O: avançar para próxima janela

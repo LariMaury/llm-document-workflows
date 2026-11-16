@@ -1,0 +1,12 @@
+flowchart LR
+    A[TXT / DOCX / PDF sintéticos] --> B{Validação local}
+    B -->|válido| C[Extração limitada]
+    B -->|inválido| X[Erro controlado]
+    C --> D[Resposta de LLM simulada]
+    D --> E[Normalização estruturada]
+    E --> F{Revisão humana}
+    F -->|aprovada| G[Contrato de atividade]
+    F -->|pendente| Y[Persistência bloqueada]
+    G --> H{Transação simulada}
+    H -->|sucesso| I[Commit em memória]
+    H -->|falha sintética| J[Rollback integral]

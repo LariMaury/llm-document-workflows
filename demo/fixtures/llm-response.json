@@ -1,0 +1,29 @@
+{
+  "titulo": "Atividade sintética sobre água",
+  "texto_base": "A água muda de estado físico conforme as condições do ambiente.",
+  "aviso": "Conteúdo fictício para demonstração local.",
+  "questoes": [
+    {
+      "tipo": "objetiva",
+      "enunciado": "Qual processo transforma água líquida em vapor?",
+      "alternativas": ["Evaporação", "Condensação", "Solidificação"],
+      "correta": "A",
+      "explicacao_gabarito": "Evaporação é a passagem do estado líquido para o gasoso.",
+      "habilidades_bncc": ["EF05CI02"]
+    },
+    {
+      "tipo": "discursiva",
+      "enunciado": "Descreva uma mudança de estado observável no cotidiano.",
+      "explicacao_gabarito": "A resposta deve identificar um exemplo e a mudança correspondente.",
+      "habilidades_bncc": ["EF05CI02"]
+    },
+    {
+      "tipo": "objetiva",
+      "enunciado": "Questão deliberadamente inválida para testar a filtragem.",
+      "alternativas": ["Única opção"],
+      "correta": "E",
+      "explicacao_gabarito": "Esta questão não deve passar pela normalização.",
+      "habilidades_bncc": ["codigo inválido"]
+    }
+  ]
+}

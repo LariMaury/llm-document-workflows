@@ -1,0 +1,42 @@
+# Dependencies and generated coverage
+node_modules/
+coverage/
+.nyc_output/
+
+# Environment files and credentials
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# Logs, caches and temporary files
+*.log
+*.tmp
+*.temp
+.cache/
+.npm/
+tmp/
+temp/
+dist/
+build/
+
+# Editor and operating-system metadata
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Local audit and internal planning documents
+audit*.json
+*.internal.md
+docs/component-assessment.md
+docs/demo-proposals.md
+docs/prepublication-audit.md
+docs/security-ip-checklist.md
+docs/selective-publication-plan.md

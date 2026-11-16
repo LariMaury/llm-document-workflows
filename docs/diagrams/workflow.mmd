@@ -1,0 +1,13 @@
+flowchart LR
+    A[Documento sintético] --> B[Validação]
+    B --> C[Processamento e extração]
+    C --> D[LLM no backend]
+    D --> E[Normalização estruturada]
+    E --> F[Revisão humana]
+    F --> G[Contrato de domínio]
+    G --> H[RPC transacional]
+    H --> I[(PostgreSQL + RLS)]
+
+    B -. entrada rejeitada .-> X[Erro controlado]
+    D -. resposta inválida .-> X
+    E -. conteúdo parcial .-> F

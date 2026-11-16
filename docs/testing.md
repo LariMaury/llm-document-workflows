@@ -17,6 +17,10 @@ npm test
 npm run demo
 ```
 
+## Integração contínua
+
+O workflow `.github/workflows/tests.yml` repete `npm ci --ignore-scripts` e `npm test` em Node.js 22 e 24 para pushes e pull requests direcionados à branch `main`. As permissões são somente de leitura; não há segredos, serviços externos ou deploy.
+
 ## Resultado final observado
 
 ```text

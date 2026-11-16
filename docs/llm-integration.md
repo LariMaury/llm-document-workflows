@@ -2,7 +2,7 @@
 
 ## 1. Princípios
 
-A integração selecionada deve demonstrar cinco decisões:
+O produto de origem confirma cinco decisões arquiteturais:
 
 1. o navegador nunca recebe a chave privada do provedor;
 2. toda chamada exige autenticação e validação server-side;
@@ -10,9 +10,11 @@ A integração selecionada deve demonstrar cinco decisões:
 4. saídas probabilísticas atravessam normalização determinística;
 5. conteúdo gerado só é persistido depois de revisão humana.
 
-Os prompts do produto original são privados. A vitrine deverá explicar o contrato e usar prompts mínimos, genéricos e novos somente após autorização.
+O portfólio demonstra normalização, validação e revisão humana a partir de uma fixture JSON versionada. Ele não contém prompts, autenticação, credenciais, adaptador de provedor nem chamada de LLM.
 
-## 2. Fluxo confirmado no código
+## 2. Fluxo confirmado no produto de origem
+
+Este fluxo documenta a integração real do produto privado; não representa serviços executados pelo portfólio.
 
 ```mermaid
 flowchart TD
@@ -52,28 +54,27 @@ O fluxo de planejamento mais recente usa uma ferramenta com input schema e escol
 
 O leitor recebe imagem ou página PDF preparada, mapa esperado e critérios definidos pela pessoa usuária. A saída é normalizada em estruturas limitadas de respostas, confiança, notas e avisos. Sugestões discursivas permanecem revisáveis.
 
-## 3. Contrato público proposto
+## 3. Contrato público implementado
 
-O portfólio não precisa expor os prompts. O contrato demonstrável poderá ser:
+O módulo `src/llm/normalize-activity.js` recebe uma resposta simulada e opções públicas:
 
 ```text
-GenerationRequest
-  context: sanitized text
-  task: public enum
-  constraints: public structured object
+normalizeActivity(simulatedResponse, {
+  quantity,
+  allowedTypes,
+  distribution
+})
 
-GenerationResult
-  status: complete | partial | rejected
-  items: normalized domain items
-  warnings: bounded string list
-  providerMetadata: omitted from persistence
+=> { titulo, texto_base, aviso, questoes } | null
 ```
 
-O adaptador público deverá aceitar uma resposta fixture em vez de chamar o provedor. Um adaptador externo poderá existir como extensão opcional, desabilitada por padrão.
+A demonstração lê `demo/fixtures/llm-response.json`, filtra itens inválidos e cria uma revisão pendente. `approveHumanReview` exige identificação da pessoa revisora antes que a persistência simulada aceite o agregado. Não existe adaptador externo neste repositório.
 
 ## 4. Validação em camadas
 
 ### Antes do provedor
+
+Controles existentes no produto de origem, documentados aqui e não executados pela demo:
 
 - sessão obrigatória;
 - perfil válido;
@@ -84,6 +85,8 @@ O adaptador público deverá aceitar uma resposta fixture em vez de chamar o pro
 - truncamento ou rejeição explícita, nunca silenciosa quando houver risco semântico.
 
 ### Depois do provedor
+
+No portfólio, a fixture entra exatamente nesta fronteira e percorre o normalizador determinístico:
 
 - seleção apenas de blocos esperados;
 - parse de JSON ou tool input;
@@ -103,6 +106,8 @@ O adaptador público deverá aceitar uma resposta fixture em vez de chamar o pro
 - validação de pontuação e sequência;
 - RPC atômica com owner derivado da sessão.
 
+No recorte executável, o gate de revisão e as validações de domínio são reais; a RPC, a sessão e o banco são substituídos por `SimulatedTransactionStore` e não são apresentados como PostgreSQL em execução.
+
 ## 5. Human-in-the-loop
 
 A revisão humana não deve ser descrita como um detalhe visual. Ela é uma fronteira arquitetural:
@@ -115,19 +120,18 @@ A revisão humana não deve ser descrita como um detalhe visual. Ela é uma fron
 
 Nos fluxos de correção, a distinção deve continuar explícita entre transcrição, sugestão original da IA, nota revisada e estado finalizado.
 
-## 6. Riscos e controles ainda necessários
+## 6. Riscos, controles e limites do portfólio
 
-| Risco | Controle existente | Controle necessário para a vitrine |
+| Risco | Controle demonstrado | Limite declarado |
 |---|---|---|
-| prompt injection em documento | instrução de sistema e normalização | corpus adversarial e separação clara entre conteúdo e instrução |
-| resposta malformada | parse defensivo e validação | schema validation reutilizável e testes de mutação |
-| custo indevido | limites de entrada | quota por usuário e adaptador mock como padrão |
-| vazamento em logs | alguns logs evitam conteúdo | política central de logging e teste de redaction |
-| dependência de provedor | gateway server-side | interface independente e fixtures portáveis |
-| erro pedagógico | edição humana | avisos explícitos, auditoria da decisão e evals sintéticos |
-| mudança de modelo | identificador fixo | configuração versionada e contrato de compatibilidade |
+| documento hostil | limites, ZIP central directory, timeout e testes inválidos | corpus adversarial amplo não incluído |
+| resposta malformada | parse defensivo, allowlists, limites e descarte de itens | normalização não garante correção pedagógica |
+| custo indevido | nenhuma chamada externa | quotas de provedor não são demonstradas |
+| vazamento em logs | sem telemetria e relatório sintético limitado | observabilidade de produção não é reproduzida |
+| dependência de provedor | fixture portável | comportamento probabilístico de modelos não é medido |
+| erro pedagógico | revisão humana obrigatória | não há alegação de acurácia pedagógica |
 
-## 7. O que não será publicado sem nova autorização
+## 7. Conteúdo excluído do repositório público
 
 - system prompts completos;
 - exemplos derivados de aulas, provas ou planejamentos reais;

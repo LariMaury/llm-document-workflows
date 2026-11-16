@@ -1,10 +1,10 @@
 # Arquitetura da seleção técnica
 
-> Status da Etapa 3: os quatro recortes descritos abaixo possuem agora implementações locais e testes independentes. O mapa entre origem e adaptação está em [source-map.md](source-map.md).
+Este documento separa a arquitetura confirmada no produto privado de origem do recorte executável deste portfólio. Os quatro componentes públicos possuem implementação local e testes independentes; o [mapa de origem](source-map.md) registra cada adaptação.
 
 ## 1. Escopo
 
-Esta documentação descreve relações confirmadas no código de uma plataforma educacional privada e propõe como apresentá-las sem publicar o produto completo. Os caminhos citados pertencem ao repositório privado de origem e não são dependências deste projeto.
+Os caminhos citados nas seções de origem pertencem ao repositório privado e não são dependências deste projeto. A demonstração pública usa somente módulos locais, fixtures sintéticas e persistência em memória explicitamente simulada.
 
 As quatro áreas escolhidas formam dois fluxos relacionados:
 
@@ -13,7 +13,7 @@ As quatro áreas escolhidas formam dois fluxos relacionados:
 
 O primeiro fluxo possui núcleo de persistência implementado. Partes mais recentes do segundo fluxo — alunos, snapshots V3, correções persistentes, lotes e relatórios — foram documentadas como validadas apenas em staging e, por isso, permanecem experimentais nesta apresentação.
 
-## 2. Componentes reais
+## 2. Produto de origem — contexto documentado, não executado aqui
 
 ### Navegador
 
@@ -85,7 +85,9 @@ Evidências principais:
 - `site/supabase/migrations/20260810173000_criar_rpc_salvar_atividade.sql:11` — RPC atômica;
 - `site/supabase/schema_individual.sql:285`–`324` — RLS e policies do núcleo.
 
-## 3. Relação end-to-end confirmada
+## 3. Relação confirmada no produto de origem
+
+O diagrama abaixo documenta o fluxo real do produto privado. Edge Functions, provedor de LLM, Supabase, PostgreSQL e RLS **não são executados por este portfólio**.
 
 ```mermaid
 sequenceDiagram
@@ -97,7 +99,7 @@ sequenceDiagram
     participant RPC as RPC salvar_atividade
     participant DB as PostgreSQL + RLS
 
-    P->>UI: Seleciona documento sintético
+    P->>UI: Seleciona documento
     UI->>ING: Arquivo + metadados limitados
     ING->>ING: Valida, limita e extrai texto
     ING-->>UI: Texto normalizado
@@ -134,25 +136,28 @@ O módulo `site/folha-respostas-contrato.js` é independente de DOM, Supabase e 
 
 `site/leitor-robustez-contrato.js` complementa o fluxo com classificação de erros, backoff exponencial limitado, métricas, contadores mutuamente exclusivos e estimativa de tempo restante.
 
-## 5. Fronteira entre implementado e experimental
+No portfólio, somente os algoritmos puros de fila, backpressure, classificação de falhas e retry foram adaptados. Eles operam sobre tarefas fictícias, sem OCR, rede, Supabase ou persistência externa.
 
-| Parte | Classificação nesta vitrine | Motivo |
+## 5. Fronteira entre produto e portfólio
+
+| Capacidade | Produto de origem | Portfólio executável |
 |---|---|---|
-| Contratos puros de atividade | Implementado | usados pelo cliente e cobertos por testes locais/de integração no projeto de origem |
-| RPC `salvar_atividade` e RLS do núcleo | Implementado | promovidos segundo o ledger local do projeto de origem |
-| Ingestão TXT/DOCX/PDF | Implementado | Edge integrada ao fluxo de atividade |
-| Geração estruturada de atividade | Implementado | fluxo completo até o editor e revisão humana |
-| Algoritmo de backpressure/retry | Implementado | módulo puro integrado ao leitor e exercitado por suítes locais |
-| Leitura multimodal de folhas V2 | Implementado no produto de origem | publicação exata não será reproduzida aqui |
-| Snapshots V3, alunos e correções | Experimental | migrations documentadas como staging-only |
-| Lotes persistentes, arquivo e relatórios BNCC | Experimental | dependem dos blocos staging-only |
-| Correção de produção textual | Experimental | módulo posterior ao baseline e dependente de avaliação multimodal |
+| Contratos de atividade | implementados | adaptados e cobertos por testes locais |
+| RPC `salvar_atividade`, PostgreSQL e RLS | implementados | documentados; substituídos por transação em memória simulada |
+| Ingestão TXT/DOCX/PDF | implementada em Edge Function | adaptada para arquivos sintéticos locais |
+| Geração estruturada com LLM | implementada com provedor server-side | resposta fixture; nenhum modelo é chamado |
+| Revisão humana | etapa real antes do salvamento | gate explícito e testável |
+| Backpressure e retry | integrados ao leitor | adaptados para tarefas fictícias locais |
+| Leitura multimodal de folhas V2 | implementada no produto de origem | omitida |
+| Snapshots V3, alunos e correções | experimental no produto de origem | omitidos |
+| Lotes persistentes e relatórios BNCC | experimental no produto de origem | omitidos |
+| Correção de produção textual | experimental no produto de origem | omitida |
 
-## 6. Decisões para a futura extração
+## 6. Decisões aplicadas no recorte público
 
-- Preservar os contratos puros como núcleo independente.
-- Substituir o gateway real por portas/interfaces e adaptadores mockados.
-- Não transportar a configuração dual completa de `dados.js`.
-- Não copiar o controlador monolítico `app.js`; extrair somente orquestração mínima aprovada.
-- Publicar uma migration reduzida e autocontida, não a cadeia histórica inteira.
-- Representar o LLM por fixtures gravadas e um adaptador opcional sem credencial padrão.
+- contratos puros isolados de DOM, autenticação e infraestrutura;
+- gateway real, Edge Functions, migrations, prompts e controlador monolítico omitidos;
+- LLM representado por fixture versionada, sem adaptador externo;
+- documentos reais substituídos por TXT versionado e DOCX/PDF gerados em memória;
+- persistência real substituída por commit/rollback em memória claramente rotulado como simulação;
+- algoritmos assíncronos exercitados com tarefas fictícias e relógio injetável.

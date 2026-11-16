@@ -1,5 +1,9 @@
 # LLM Document Workflows
 
+[Português](README.md) · [English](README.en.md)
+
+[![Tests](https://github.com/LariMaury/llm-document-workflows/actions/workflows/tests.yml/badge.svg)](https://github.com/LariMaury/llm-document-workflows/actions/workflows/tests.yml)
+
 Portfólio técnico demonstrável derivado seletivamente de componentes de engenharia de uma plataforma educacional privada. Este projeto não reconstrói o produto: apresenta algoritmos isolados, dados sintéticos, testes reproduzíveis e limites públicos explícitos.
 
 - **Autora:** Maurylia Loureiro
@@ -12,6 +16,7 @@ Portfólio técnico demonstrável derivado seletivamente de componentes de engen
 - **Backend:** contratos de domínio, tratamento de erros, limites de recursos e desenho transacional.
 - **Full Stack:** relação documentada entre entrada do usuário, processamento, revisão e persistência.
 - **Automação e resiliência:** concorrência limitada, backpressure, retry seletivo, cancelamento e limpeza.
+- **Qualidade:** 36 testes automatizados e CI em Node.js 22 e 24.
 
 ## Fluxo executável
 
@@ -52,6 +57,8 @@ npm run demo
 ```
 
 Não são necessárias variáveis de ambiente, contas externas ou credenciais.
+
+O workflow [Tests](.github/workflows/tests.yml) executa `npm ci --ignore-scripts` e `npm test` em Node.js 22 e 24 para pushes e pull requests direcionados à `main`. Ele possui permissão somente de leitura, não usa segredos e não realiza deploy.
 
 ## Resultado verificado
 

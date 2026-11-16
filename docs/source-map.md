@@ -25,7 +25,7 @@ Omitidos: prompt de sistema, instruções pedagógicas, autenticação, chamada 
 |---|---|---|---|---|
 | `src/ingestion/secure-document-ingestion.js` | `decodeBase64File` | `processar-material-atividade/index.ts:39` | adaptado | portado para execução local; limite de 5 MB preservado |
 | mesmo arquivo | `validateZip` | mesmo arquivo, `:84` | adaptado | inspeção do diretório central e limites preservados |
-| mesmo arquivo | `extractDocx` | mesmo arquivo, `:128` | adaptado | usa a mesma versão fixada de `fflate` |
+| mesmo arquivo | `extractDocx` | mesmo arquivo, `:128` | adaptado | usa `fflate 0.8.3`, atualização corretiva auditada |
 | mesmo arquivo | `withTimeout`, `extractPdf` | mesmo arquivo, `:149` e `:163` | adaptado | dependências injetáveis para testes; destruição do parser preservada |
 | mesmo arquivo | `processDocumentBytes` | handler do mesmo arquivo, `:196`–`:227` | adaptado | removidos HTTP, CORS, autenticação e Supabase |
 | `demo/synthetic-documents.js` | geradores DOCX/PDF | sem equivalente | criado para demonstração | gera somente conteúdo artificial em memória |
@@ -55,6 +55,6 @@ A classe em memória não implementa PostgreSQL, autenticação, transações re
 
 Omitidos: leitor de folhas, OCR, processamento visual, lotes reais, rede, chamadas de Edge Functions e persistência de progresso.
 
-## Revisão de divulgação ainda necessária
+## Estado de publicação
 
-A adaptação local foi autorizada para esta etapa. Antes de publicação pública ainda é necessário confirmar titularidade dos trechos selecionados, dependências transitivas, marca, materiais curriculares e licença futura.
+O recorte público contém somente os arquivos selecionados e atribuídos à autora no histórico do projeto de origem. Dependências e condições de uso estão registradas em `NOTICE.md`; nenhuma licença aberta foi concedida. Prompts, dados, marca, materiais curriculares e configurações privadas permanecem excluídos.

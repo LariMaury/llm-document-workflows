@@ -2,7 +2,7 @@
 
 ## 1. Objetivo
 
-Esta seleção deve mostrar decisões de segurança sem transportar a superfície operacional da plataforma original. A demonstração pública será construída para falhar de forma segura e operar com dados sintéticos e serviços mockados.
+Esta seleção demonstra decisões de segurança sem transportar a superfície operacional da plataforma original. A execução local falha de forma controlada e opera somente com dados sintéticos, fixtures e componentes em memória.
 
 ## 2. Ativos protegidos
 
@@ -57,16 +57,16 @@ Esta seleção deve mostrar decisões de segurança sem transportar a superfíci
 
 | Risco | Impacto | Tratamento na vitrine |
 |---|---|---|
-| configuração real copiada por engano | acesso indevido ou exposição operacional | usar somente arquivos `.example` com valores fictícios |
-| chave anônima apontando para produção | exposição desnecessária do projeto real | nenhum endpoint real será incluído |
-| abuso de funções pagas | custo e indisponibilidade | mocks por padrão; quota obrigatória antes de qualquer adaptador real |
-| logs de saída do modelo | conteúdo pedagógico ou pessoal em observabilidade | logging estruturado sem payload e testes de redaction |
-| demo guardando senha em `localStorage` | reutilização acidental de senha real | não copiar o mecanismo de autenticação do modo demo |
-| dependências por CDN sem integridade | supply-chain e quebra de reprodutibilidade | manifesto, lockfile e build local na futura adaptação |
-| XSS em templates HTML | execução de conteúdo não confiável | APIs seguras, escaping central e testes específicos |
-| documentos hostis | CPU, memória e parser abuse | limites, magic bytes, timeout e corpus de arquivos adversariais sintéticos |
-| prompt injection | saída inadequada ou exfiltração contextual | conteúdo isolado, schema estrito, sem ferramentas privilegiadas e revisão humana |
-| correção automatizada incorreta | dano pedagógico | nunca finalizar sem revisão; rotular como sugestão |
+| configuração real copiada por engano | acesso indevido ou exposição operacional | nenhuma configuração de ambiente é versionada |
+| chave anônima apontando para produção | exposição desnecessária do projeto real | nenhum endpoint real está incluído |
+| abuso de funções pagas | custo e indisponibilidade | não existem adaptadores ou chamadas externas |
+| logs de saída do modelo | conteúdo pedagógico ou pessoal em observabilidade | sem telemetria; saída CLI contém somente métricas sintéticas |
+| demo guardando senha em `localStorage` | reutilização acidental de senha real | não há autenticação nem uso de `localStorage` |
+| dependências sem integridade | supply-chain e quebra de reprodutibilidade | versões fixadas, lockfile, `npm ci` e auditoria registrada |
+| XSS em templates HTML | execução de conteúdo não confiável | a vitrine não renderiza DOM ou templates HTML |
+| documentos hostis | CPU, memória e parser abuse | limites, magic bytes, timeout e testes de entradas inválidas |
+| prompt injection | saída inadequada ou exfiltração contextual | nenhum provedor ou ferramenta é chamado; fixture passa por normalização e revisão |
+| correção automatizada incorreta | dano pedagógico | não há correção de respostas reais nem alegação de acurácia |
 
 ## 5. Modelo de ameaça resumido
 
@@ -100,19 +100,19 @@ Esta seleção deve mostrar decisões de segurança sem transportar a superfíci
 - PDFs gerados pelo próprio repositório-vitrine;
 - nenhuma cópia de fixture física da plataforma;
 - nenhuma telemetria remota por padrão;
-- limpeza automática dos arquivos temporários locais;
+- nenhum arquivo temporário é criado pela demonstração;
 - respostas de LLM mantidas em fixtures versionadas e revisadas.
 
-## 7. Retenção e observabilidade propostas
+## 7. Retenção e observabilidade da demonstração
 
-| Item | Retenção proposta |
+| Item | Comportamento implementado |
 |---|---|
 | arquivo sintético carregado | somente durante o processo local |
-| Base64 de página | somente na janela ativa |
+| payload Base64 testado | somente durante a chamada local |
 | resposta fixture de LLM | versionada, sem PII |
-| logs | evento, duração, categoria de erro e ID sintético; nunca payload |
-| resultado normalizado | memória ou fixture sintética |
-| banco local opcional | recriado por seed sintético |
+| relatório | métricas sintéticas limitadas, sem documento ou conteúdo privado |
+| resultado normalizado | mantido em memória durante a execução |
+| persistência | estado em memória descartado ao encerrar o processo |
 
 ## 8. Condições para qualquer demonstração online futura
 
